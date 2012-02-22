@@ -3,13 +3,22 @@ var comments = [];
 var commentcount = 0;
 
 function handleComment(commentindex) {
-    if (comments[commentindex]['node'].style.display == 'none') {
-        comments[commentindex]['node'].style.display = 'block';
+    var comment = comments[commentindex]['node'].getElementsByTagName('span');
+	
+	for (i in comment) {
+		if (comment[i].getAttribute('class') == 'comment') {
+			comment = comment[i];
+			break;
+		}
+	}
+    
+	if (comment.style.display == 'none') {
+        comment.style.display = 'block';
     } else {
-        comments[commentindex]['node'].style.display = 'none';
-        for (var i in comments[commentindex]['children']) {
-            handleComment(comments[commentindex]['children'][i]);
-        }
+        comment.style.display = 'none';
+    }
+    for (var i in comments[commentindex]['children']) {
+        handleComment(comments[commentindex]['children'][i]);
     }
 }
 
@@ -21,27 +30,26 @@ for (i in title) {
     }
 }
 
+/* Store current parent at level*/
+var parent = {};
+
 for (i in imgs) {
     if (imgs[i].getAttribute('src') == 'http://ycombinator.com/images/s.gif') {
         var width = imgs[i].getAttribute('width');
         var depth = (parseInt(width)/40);
         if (depth % 1 == 0 ) {
-            title.innerHTML += (parseInt(width)/40) + "<br />";
+            title.innerHTML += '<br />' + (parseInt(width)/40);
             comments[commentcount] = {};
             comments[commentcount]['node'] = imgs[i].parentNode.parentNode.parentNode.parentNode.parentNode.parentNode;
             imgs[i].parentNode.parentNode.childNodes[2].childNodes[0].innerHTML += ' <a href="javascript:handleComment('+commentcount+')">(toggle comments)</a>';
             /*comments[commentcount]['node'].style.display = 'none';*/
             comments[commentcount]['depth'] = depth;
             comments[commentcount]['children'] = [];
-            if (commentcount > 0) {
-                if (depth > comments[commentcount - 1]['depth']) {
-                    title.innerHTML += 'deeper' + "<br />";
-                    comments[commentcount-1]['children'].push(commentcount);
-                } else if(depth > comments[commentcount - 1]['depth']) { 
-                    title.innerHTML += 'less' + "<br />";
-                } else {
-                    title.innerHTML += 'same' + "<br />";
-                }
+            
+			parent[depth] = comments[commentcount];
+
+			if (commentcount > 0) {
+            	parent[depth - 1]['children'].push(commentcount);
             }
             commentcount +=1;
         }
