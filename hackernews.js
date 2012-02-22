@@ -3,10 +3,13 @@ var comments = [];
 var commentcount = 0;
 
 function handleComment(commentindex) {
-    if (comments[commentindex].style.display == 'none') {
-        comments[commentindex].style.display = 'block';
+    if (comments[commentindex]['node'].style.display == 'none') {
+        comments[commentindex]['node'].style.display = 'block';
     } else {
-        comments[commentindex].style.display = 'none';
+        comments[commentindex]['node'].style.display = 'none';
+        for (var i in comments[commentindex]['children']) {
+            handleComment(comments[commentindex]['children'][i]);
+        }
     }
 }
 
@@ -22,9 +25,24 @@ for (i in imgs) {
     if (imgs[i].getAttribute('src') == 'http://ycombinator.com/images/s.gif') {
         var width = imgs[i].getAttribute('width');
         var depth = (parseInt(width)/40);
-        if (depth % 1 == 0 && depth > 0) {
+        if (depth % 1 == 0 ) {
             title.innerHTML += (parseInt(width)/40) + "<br />";
-            comments[commentcount].node = imgs[i].parentNode.parentNode.parentNode.parentNode.parentNode.parentNode;
+            comments[commentcount] = {};
+            comments[commentcount]['node'] = imgs[i].parentNode.parentNode.parentNode.parentNode.parentNode.parentNode;
+            imgs[i].parentNode.parentNode.childNodes[2].childNodes[0].innerHTML += ' <a href="javascript:handleComment('+commentcount+')">(toggle comments)</a>';
+            /*comments[commentcount]['node'].style.display = 'none';*/
+            comments[commentcount]['depth'] = depth;
+            comments[commentcount]['children'] = [];
+            if (commentcount > 0) {
+                if (depth > comments[commentcount - 1]['depth']) {
+                    title.innerHTML += 'deeper' + "<br />";
+                    comments[commentcount-1]['children'].push(commentcount);
+                } else if(depth > comments[commentcount - 1]['depth']) { 
+                    title.innerHTML += 'less' + "<br />";
+                } else {
+                    title.innerHTML += 'same' + "<br />";
+                }
+            }
             commentcount +=1;
         }
     }
