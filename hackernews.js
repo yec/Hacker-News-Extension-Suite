@@ -42,14 +42,6 @@ function handleComment(commentindex, isRoot) {
     }
 }
 
-var title = document.getElementsByTagName('td');
-for (i in title) {
-    if (title[i].getAttribute('class') == 'title') {
-        title = title[i];
-        break;
-    }
-}
-
 /* Store current parent at level*/
 var parent = {};
 
