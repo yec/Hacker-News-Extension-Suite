@@ -1,3 +1,7 @@
+if (hnLoaded) {
+    return;
+}
+var hnLoaded = true;
 var imgs = document.getElementsByTagName('img');
 var comments = [];
 var commentcount = 0;

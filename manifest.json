@@ -1,0 +1,12 @@
+{
+  "name": "HN Extension Suite",
+  "version": "0.1",
+  "description": "Extend Hacker News",
+  "browser_action": {
+    "default_icon": "icon.png",
+    "popup": "popup.html"
+  },
+  "permissions": [
+    "http://api.flickr.com/"
+  ]
+}
